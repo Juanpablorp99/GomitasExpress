@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128">
+  <!-- Árbol visto desde arriba -->
+  <circle cx="72" cy="76" r="54" fill="#000" opacity="0.18"/>
+  <circle cx="62" cy="62" r="56" fill="#245c26"/>
+  <circle cx="46" cy="50" r="36" fill="#2f7a31"/>
+  <circle cx="82" cy="72" r="30" fill="#2b6e2d"/>
+  <circle cx="68" cy="34" r="22" fill="#3a8c3b"/>
+  <circle cx="52" cy="40" r="14" fill="#4fa74f"/>
+  <circle cx="86" cy="58" r="10" fill="#4fa74f"/>
+</svg>

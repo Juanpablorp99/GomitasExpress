@@ -1,0 +1,25 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" uid="uid://bpu805nci05ba" path="res://scripts/actors/player.gd" id="1_player"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_player"]
+radius = 18.0
+
+[node name="Player" type="CharacterBody2D"]
+motion_mode = 1
+script = ExtResource("1_player")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("CircleShape2D_player")
+
+[node name="Sprite" type="AnimatedSprite2D" parent="."]
+show_behind_parent = true
+position = Vector2(0, -32)
+scale = Vector2(0.7, 0.7)
+
+[node name="Camera2D" type="Camera2D" parent="."]
+limit_left = -450
+limit_top = -350
+limit_right = 2050
+limit_bottom = 1200
+position_smoothing_enabled = true

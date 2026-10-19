@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128">
+  <!-- Pino nevado visto desde arriba -->
+  <circle cx="72" cy="76" r="54" fill="#1a2a40" opacity="0.18"/>
+  <polygon points="64,4 82,40 120,46 92,72 100,112 64,92 28,112 36,72 8,46 46,40" fill="#1f5a3a"/>
+  <polygon points="64,20 76,46 102,50 82,68 88,96 64,82 40,96 46,68 26,50 52,46" fill="#2a7048"/>
+  <g fill="#ffffff">
+    <ellipse cx="64" cy="58" rx="16" ry="12"/>
+    <ellipse cx="40" cy="52" rx="10" ry="6"/>
+    <ellipse cx="88" cy="54" rx="10" ry="6"/>
+    <ellipse cx="50" cy="88" rx="9" ry="5"/>
+    <ellipse cx="80" cy="90" rx="9" ry="5"/>
+    <ellipse cx="64" cy="24" rx="6" ry="4"/>
+  </g>
+  <circle cx="60" cy="54" r="5" fill="#e8f4ff"/>
+</svg>
