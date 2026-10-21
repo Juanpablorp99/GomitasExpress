@@ -10,6 +10,9 @@ const COLOR_OK := Color(0.35, 0.9, 0.4)
 const COLOR_WARN := Color(1.0, 0.8, 0.2)
 const COLOR_DANGER := Color(1.0, 0.3, 0.3)
 
+## Se cerró el menú "¿Guardar partida?" de fin de nivel (guardó o no): warehouse.gd sigue.
+signal save_menu_closed
+
 @onready var game: Node = get_parent()
 
 # Arriba
@@ -65,6 +68,7 @@ const COLOR_DANGER := Color(1.0, 0.3, 0.3)
 @onready var resume_button: Button = $PauseMenu/Center/Panel/Content/ResumeButton
 @onready var restart_button: Button = $PauseMenu/Center/Panel/Content/RestartButton
 @onready var menu_button: Button = $PauseMenu/Center/Panel/Content/MenuButton
+@onready var levels_button: Button = $PauseMenu/Center/Panel/Content/LevelsButton
 
 var _message_tween: Tween
 var _board_rows: Array[Dictionary] = []   # [{ "order", "label", "bar", "buttons": [{ "worker", "button" }] }]
@@ -81,6 +85,7 @@ func _ready() -> void:
 	resume_button.pressed.connect(toggle_pause)
 	restart_button.pressed.connect(_restart_level)
 	menu_button.pressed.connect(_go_to_menu)
+	levels_button.pressed.connect(_open_level_select)
 	message_label.modulate.a = 0.0
 	_style_time_bar(order_time_bar)
 
@@ -156,6 +161,27 @@ func _go_to_menu() -> void:
 	get_tree().change_scene_to_file(Levels.TITLE_SCENE)
 
 
+## Desde la pausa: volver a cualquier nivel ya desbloqueado.
+func _open_level_select() -> void:
+	var select := LevelSelect.new()
+	select.level_chosen.connect(_change_level)
+	add_child(select)
+
+
+func _change_level(level_number: int) -> void:
+	get_tree().paused = false
+	get_tree().change_scene_to_file(Levels.SCENES[level_number - 1])
+
+
+# --- Guardar al ganar un nivel ------------------------------------------------
+
+func open_save_menu() -> void:
+	hide_overlay()
+	var menu := SlotMenu.new(SlotMenu.Mode.SAVE)
+	menu.closed.connect(save_menu_closed.emit)
+	add_child(menu)
+
+
 # --- Actualización de textos ---------------------------------------------------
 
 func _update() -> void:
@@ -169,6 +195,7 @@ func _update() -> void:
 		resume_button.text = Lang.t("PAUSE_RESUME")
 		restart_button.text = Lang.t("PAUSE_RESTART")
 		menu_button.text = Lang.t("PAUSE_MENU")
+		levels_button.text = Lang.t("PAUSE_LEVELS")
 	var goals: Array = config["stars"]
 	level_label.text = Lang.t(config["name"]) + "\n" + Lang.t("LEVEL_GOAL") % [goals[0], goals[1], goals[2]]
 
@@ -250,8 +277,8 @@ func _update_overlay() -> void:
 					overlay_label.text = Lang.t("LEVEL_FAILED_TIME") % [config["stars"][0], game.money]
 		"game_complete":
 			overlay_title.text = "GOMITAS EXPRESS"
-			var won: Array = Levels.stars_won
-			overlay_label.text = Lang.t("GAME_COMPLETE") % [won[0], won[1], won[2]]
+			overlay_label.text = Lang.t("GAME_COMPLETE") % [SaveManager.get_stars(1),
+					SaveManager.get_stars(2), SaveManager.get_stars(3)]
 
 
 ## Abajo: qué lleva el jugador y qué hace la tecla E en la estación cercana.

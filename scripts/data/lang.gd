@@ -49,8 +49,8 @@ const TEXTS := {
 		"en": "Winter is here! 2 new gummies: STRAWBERRY KISSES and COLAS.\n\nICE is slippery and a SNOWSTORM may come.\nSTOCK runs out: order boxes from the SUPPLIER and restock the shelves.\nROBOTS now use AI: they pick the most urgent and closest order.",
 	},
 	"CONTROLS": {
-		"es": "WASD / flechas: mover · SHIFT: correr · E: usar (mantén E para preparar y reparar) · L: idioma · ESC: pausa",
-		"en": "WASD / arrows: move · SHIFT: run · E: use (hold E to pack and repair) · L: language · ESC: pause",
+		"es": "WASD / flechas: mover · SHIFT: correr · E: usar (mantén E para preparar y reparar) · L: idioma · ESC: pausa · F11: pantalla completa",
+		"en": "WASD / arrows: move · SHIFT: run · E: use (hold E to pack and repair) · L: language · ESC: pause · F11: fullscreen",
 	},
 	# --- Pausa ---
 	"PAUSE_BUTTON": {"es": "[ESC] PAUSA", "en": "[ESC] PAUSE"},
@@ -59,7 +59,31 @@ const TEXTS := {
 	"PAUSE_RESTART": {"es": "REINICIAR NIVEL", "en": "RESTART LEVEL"},
 	"PAUSE_MENU": {"es": "MENÚ PRINCIPAL", "en": "MAIN MENU"},
 	"PRESS_ENTER_START": {"es": "Presiona ENTER para empezar", "en": "Press ENTER to start"},
-	"TITLE_PLAY": {"es": "JUGAR", "en": "PLAY"},
+	"TITLE_NEW_GAME": {"es": "NUEVA PARTIDA", "en": "NEW GAME"},
+	"TITLE_LOAD": {"es": "CARGAR PARTIDA", "en": "LOAD GAME"},
+	# --- Ranuras de guardado y selector de niveles ---
+	"SLOTS_LOAD_TITLE": {"es": "CARGAR PARTIDA", "en": "LOAD GAME"},
+	"SLOTS_SAVE_TITLE": {"es": "¿GUARDAR PARTIDA?", "en": "SAVE GAME?"},
+	"SLOTS_LOAD_HINT": {"es": "Elige la partida que quieres continuar.", "en": "Choose the game you want to continue."},
+	"SLOTS_SAVE_HINT": {"es": "Elige una ranura para guardar tu progreso.", "en": "Choose a slot to save your progress."},
+	"SLOTS_AUTOSAVED": {"es": "Tu progreso se guardó automáticamente en la ranura %d.\nTambién puedes guardarlo en otra.", "en": "Your progress was saved automatically in slot %d.\nYou can also save it in another one."},
+	"SLOT_EMPTY": {"es": "RANURA %d  —  VACÍA", "en": "SLOT %d  —  EMPTY"},
+	"SLOT_INFO": {"es": "RANURA %d  ·  NIVEL %d  ·  %d/%d ESTRELLAS  ·  %s", "en": "SLOT %d  ·  LEVEL %d  ·  %d/%d STARS  ·  %s"},
+	"SLOT_IN_USE": {"es": "(EN USO)", "en": "(IN USE)"},
+	"SLOTS_CONFIRM": {"es": "La ranura %d ya tiene una partida.\n¿Quieres sobreescribirla?", "en": "Slot %d already has a saved game.\nDo you want to overwrite it?"},
+	"SLOTS_YES": {"es": "SÍ, SOBREESCRIBIR", "en": "YES, OVERWRITE"},
+	"SLOTS_NO": {"es": "NO", "en": "NO"},
+	"SLOTS_SAVED": {"es": "¡Partida guardada en la ranura %d!", "en": "Game saved in slot %d!"},
+	"SLOTS_SAVE_ERROR": {"es": "No se pudo guardar la partida.", "en": "The game could not be saved."},
+	"SLOTS_LOAD_ERROR": {"es": "No se pudo cargar esa partida.", "en": "That game could not be loaded."},
+	"SLOTS_SKIP": {"es": "CONTINUAR SIN GUARDAR", "en": "CONTINUE WITHOUT SAVING"},
+	"SLOTS_CONTINUE": {"es": "CONTINUAR", "en": "CONTINUE"},
+	"SLOTS_BACK": {"es": "VOLVER", "en": "BACK"},
+	"LEVELS_TITLE": {"es": "ELEGIR NIVEL", "en": "CHOOSE LEVEL"},
+	"LEVEL_LOCKED": {"es": "BLOQUEADO", "en": "LOCKED"},
+	"LEVEL_BEST": {"es": "MEJOR: $%d", "en": "BEST: $%d"},
+	"LEVEL_NOT_PLAYED": {"es": "SIN COMPLETAR", "en": "NOT COMPLETED"},
+	"PAUSE_LEVELS": {"es": "ELEGIR NIVEL", "en": "CHOOSE LEVEL"},
 	"TITLE_LANGUAGE": {"es": "IDIOMA: ESPAÑOL", "en": "LANGUAGE: ENGLISH"},
 	"TITLE_QUIT": {"es": "SALIR", "en": "QUIT"},
 	"TITLE_SUBTITLE": {"es": "¡Distribuye gomitas Fini lo más rápido que puedas!", "en": "Deliver Fini gummies as fast as you can!"},
@@ -228,3 +252,4 @@ static func t(key: String) -> String:
 
 static func toggle() -> void:
 	current = "en" if current == "es" else "es"
+	SaveManager.save_settings()   # el idioma elegido se recuerda al volver a abrir el juego

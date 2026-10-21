@@ -90,9 +90,6 @@ const REPAIR_TIME := 1.2           # segundos manteniendo E para reparar un robo
 const EVENT_INTERVAL := [25.0, 40.0]   # cada cuánto puede pasar un evento sorpresa
 const EVENT_DURATION := {"rush": 20.0, "spill": 25.0, "blackout": 12.0, "storm": 15.0}
 
-## Estrellas conseguidas en cada nivel (para la pantalla final). Sobrevive al cambiar de escena.
-static var stars_won := [0, 0, 0]
-
 
 static func get_config(level_number: int) -> Dictionary:
 	return CONFIG[level_number - 1]

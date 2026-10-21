@@ -1,15 +1,19 @@
 extends Control
-## Pantalla de inicio: logo, gomitas cayendo de fondo y botones JUGAR / IDIOMA / SALIR.
-## ENTER también empieza el juego y L cambia el idioma.
+## Pantalla de inicio: logo, gomitas cayendo de fondo y botones NUEVA PARTIDA /
+## CARGAR PARTIDA / IDIOMA / SALIR. ENTER empieza una partida nueva y L cambia el idioma.
+## Cargar partida abre las ranuras (slot_menu.gd) y después el selector de niveles
+## (level_select.gd) para elegir entre los niveles desbloqueados.
 
 const GUMMY_COUNT := 26
 
 var _gummies: Array[Dictionary] = []   # { "id", "pos", "speed", "spin", "size" }
 var _time := 0.0
+var _menu: Control = null   # ranuras o selector de niveles abierto encima
 
 @onready var logo: TextureRect = $Logo
 @onready var subtitle: Label = $Subtitle
 @onready var play_button: Button = $Buttons/PlayButton
+@onready var load_button: Button = $Buttons/LoadButton
 @onready var language_button: Button = $Buttons/LanguageButton
 @onready var quit_button: Button = $Buttons/QuitButton
 @onready var controls_label: Label = $ControlsLabel
@@ -18,16 +22,20 @@ var _time := 0.0
 func _ready() -> void:
 	logo.texture = Art.LOGO
 	play_button.pressed.connect(_play)
+	load_button.pressed.connect(_open_load_menu)
 	language_button.pressed.connect(_toggle_language)
 	quit_button.pressed.connect(get_tree().quit)
 	var ids: Array = Products.INFO.keys()
+	var screen := get_viewport_rect().size
 	for i in GUMMY_COUNT:
-		_gummies.append({"id": ids[i % ids.size()], "pos": Vector2(randf() * 1280, randf() * 720),
+		_gummies.append({"id": ids[i % ids.size()], "pos": Vector2(randf() * screen.x, randf() * screen.y),
 				"speed": randf_range(30, 80), "spin": randf_range(-1.5, 1.5), "size": randf_range(40, 80)})
 	_update_texts()
 
 
 func _unhandled_input(event: InputEvent) -> void:
+	if _menu != null:
+		return   # las ranuras o el selector de niveles atienden sus propias teclas
 	if event.is_action_pressed("ui_accept"):
 		_play()
 	elif event.is_action_pressed("toggle_language"):
@@ -62,9 +70,39 @@ func _draw() -> void:
 	draw_set_transform(Vector2.ZERO)
 
 
+## NUEVA PARTIDA: desde cero, en el Nivel 1 y sin ranura (se elige al guardar).
 func _play() -> void:
-	Levels.stars_won = [0, 0, 0]
+	SaveManager.new_game()
 	get_tree().change_scene_to_file(Levels.SCENES[0])
+
+
+func _open_load_menu() -> void:
+	var menu := SlotMenu.new(SlotMenu.Mode.LOAD)
+	menu.loaded.connect(_on_game_loaded)
+	menu.closed.connect(_on_menu_closed)
+	_open(menu)
+
+
+## Partida cargada: elegir en qué nivel (desbloqueado) seguir.
+func _on_game_loaded(_slot: int) -> void:
+	var select := LevelSelect.new()
+	select.level_chosen.connect(_start_level)
+	select.closed.connect(_on_menu_closed)
+	_open(select)
+
+
+func _start_level(level_number: int) -> void:
+	get_tree().change_scene_to_file(Levels.SCENES[level_number - 1])
+
+
+func _open(menu: Control) -> void:
+	_menu = menu
+	add_child(menu)
+
+
+func _on_menu_closed() -> void:
+	_menu = null
+	_update_texts()
 
 
 func _toggle_language() -> void:
@@ -73,7 +111,9 @@ func _toggle_language() -> void:
 
 
 func _update_texts() -> void:
-	play_button.text = Lang.t("TITLE_PLAY")
+	play_button.text = Lang.t("TITLE_NEW_GAME")
+	load_button.text = Lang.t("TITLE_LOAD")
+	load_button.disabled = not SaveManager.has_any_save()
 	language_button.text = Lang.t("TITLE_LANGUAGE")
 	quit_button.text = Lang.t("TITLE_QUIT")
 	subtitle.text = Lang.t("TITLE_SUBTITLE")

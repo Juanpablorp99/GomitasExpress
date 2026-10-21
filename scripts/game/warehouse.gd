@@ -105,6 +105,7 @@ func _ready() -> void:
 	_event_time = randf_range(Levels.EVENT_INTERVAL[0], Levels.EVENT_INTERVAL[1])
 	player.interact_requested.connect(_on_player_interact)
 	hud.setup()
+	hud.save_menu_closed.connect(_go_to_next_level)
 	_set_player_enabled(false)
 	hud.show_overlay()   # pantalla de inicio del nivel
 
@@ -122,14 +123,20 @@ func _on_overlay_accept() -> void:
 		"intro":
 			_start_level()
 		"won":
-			if level_number < Levels.count():
-				get_tree().change_scene_to_file(Levels.SCENES[level_number])
-			else:
-				phase = "game_complete"
+			hud.open_save_menu()   # "¿Guardar partida?" y después _go_to_next_level()
 		"game_complete":
 			get_tree().change_scene_to_file(Levels.TITLE_SCENE)
 		"lost":
 			get_tree().reload_current_scene()
+
+
+## Después del menú de guardado: siguiente nivel, o la pantalla de juego completado.
+func _go_to_next_level() -> void:
+	if level_number < Levels.count():
+		get_tree().change_scene_to_file(Levels.SCENES[level_number])
+	else:
+		phase = "game_complete"
+		hud.show_overlay()
 
 
 ## Cambia entre español e inglés y redibuja los textos del almacén.
@@ -333,7 +340,7 @@ func _finish_level() -> void:
 	if stars == 0:
 		_lose("time")
 		return
-	Levels.stars_won[level_number - 1] = maxi(Levels.stars_won[level_number - 1], stars)
+	SaveManager.record_win(level_number, stars, money)   # desbloquea el siguiente y autoguarda
 	phase = "won"
 	_stop_everything()
 
