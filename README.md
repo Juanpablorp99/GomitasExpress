@@ -14,6 +14,7 @@ Sos un operario de un almacén de gomitas Fini. Llegan pedidos de clientes y ten
 | SHIFT | Correr (gasta energía) |
 | E | Usar estación · **mantener E** para preparar pedidos y reparar robots |
 | L | Cambiar idioma (español / inglés) |
+| M | Silenciar / activar el sonido |
 | ESC / P | Pausa |
 | Mouse | Tablero de pedidos, tienda de robots y proveedor |
 
@@ -48,7 +49,8 @@ scripts/
   world/    estaciones, escenario e iluminación
   ui/       HUD, pantalla de título
 scenes/     niveles (level_1..3), jugador, HUD y título
-assets/     imágenes de personajes, productos, objetos, vehículos e interfaz
+assets/     imágenes de personajes, productos, objetos, vehículos e interfaz; música y efectos (audio/)
+tools/      generate_audio.js crea los sonidos (node tools/generate_audio.js)
 ```
 
 Para ajustar la dificultad (tiempo, metas de estrellas, paciencia de los clientes, eventos), modificá los valores de `scripts/data/levels.gd`.

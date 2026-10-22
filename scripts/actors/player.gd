@@ -35,6 +35,8 @@ var slippery := false
 var speed_mult := 1.0
 ## Progreso de la acción "mantener E" (0..1) para dibujar la barra. Lo pone warehouse.gd.
 var hold_ratio := 0.0
+## True mientras corre (para el polvo de effects.gd).
+var sprinting := false
 
 ## Animaciones del personaje: nombre -> [poses (imágenes de assets/characters/player/), cuadros por segundo].
 ## Cada una existe hacia el frente ("_front"), de lado ("_side", mira a la derecha y se
@@ -79,7 +81,7 @@ func _physics_process(delta: float) -> void:
 	if is_stunned():
 		direction = Vector2.ZERO
 
-	var sprinting := Input.is_action_pressed("sprint") and direction != Vector2.ZERO and not _exhausted
+	sprinting = Input.is_action_pressed("sprint") and direction != Vector2.ZERO and not _exhausted
 	if sprinting:
 		stamina -= STAMINA_DRAIN * delta
 		if stamina <= 0.0:

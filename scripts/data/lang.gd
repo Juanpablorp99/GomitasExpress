@@ -49,8 +49,8 @@ const TEXTS := {
 		"en": "Winter is here! 2 new gummies: STRAWBERRY KISSES and COLAS.\n\nICE is slippery and a SNOWSTORM may come.\nSTOCK runs out: order boxes from the SUPPLIER and restock the shelves.\nROBOTS now use AI: they pick the most urgent and closest order.",
 	},
 	"CONTROLS": {
-		"es": "WASD / flechas: mover · SHIFT: correr · E: usar (mantén E para preparar y reparar) · L: idioma · ESC: pausa · F11: pantalla completa",
-		"en": "WASD / arrows: move · SHIFT: run · E: use (hold E to pack and repair) · L: language · ESC: pause · F11: fullscreen",
+		"es": "WASD / flechas: mover · SHIFT: correr · E: usar (mantén E para preparar y reparar) · L: idioma · M: sonido · ESC: pausa · F11: pantalla completa",
+		"en": "WASD / arrows: move · SHIFT: run · E: use (hold E to pack and repair) · L: language · M: sound · ESC: pause · F11: fullscreen",
 	},
 	# --- Pausa ---
 	"PAUSE_BUTTON": {"es": "[ESC] PAUSA", "en": "[ESC] PAUSE"},
@@ -113,6 +113,7 @@ const TEXTS := {
 	"MSG_ORDER_EXPIRED": {"es": "¡EL CLIENTE DEL PEDIDO #%03d SE CANSÓ!\n-1 VIDA  -$%d", "en": "ORDER #%03d CUSTOMER LEFT!\n-1 LIFE  -$%d"},
 	"MSG_TIME_ALMOST_UP": {"es": "¡QUEDAN 30 SEGUNDOS!", "en": "30 SECONDS LEFT!"},
 	"MSG_COMBO": {"es": "¡COMBO %s!", "en": "COMBO %s!"},
+	"FX_BONK": {"es": "¡PUM!", "en": "BONK!"},
 	"MSG_FORKLIFT_HIT": {"es": "¡CUIDADO CON EL MONTACARGAS!", "en": "WATCH OUT FOR THE FORKLIFT!"},
 	"MSG_FORKLIFT_DROP": {"es": "¡TE CHOCÓ EL MONTACARGAS!\nSe te cayeron las gomitas", "en": "THE FORKLIFT HIT YOU!\nYou dropped your gummies"},
 	"MSG_ROBOT_BROKEN": {"es": "¡%s ATASCADO!\nVe a repararlo (mantén E)", "en": "%s IS STUCK!\nGo repair it (hold E)"},

@@ -20,6 +20,7 @@ extends Node2D
 ##   Luces del nivel de noche         -> scripts/world/lighting.gd
 ##   IA de los robots (Nivel 3)       -> scripts/game/task_ai.gd
 ##   Caminos de los robots (A*)       -> scripts/game/path_grid.gd
+##   Efectos (explosiones, monedas...) -> scripts/world/effects.gd
 
 const WALL_THICKNESS := 40.0
 const NEXT_ORDER_DELAY := 3.0
@@ -83,6 +84,7 @@ var _event_time := 0.0
 var _hold_target: Object = null   # estación o robot en el que se está manteniendo E
 var _hold_time := 0.0
 var _paths := PathGrid.new()
+var effects := Effects.new()
 
 @onready var player: Player = $Player
 @onready var reception: Station = get_node_or_null("Stations/Reception")
@@ -102,12 +104,15 @@ func _ready() -> void:
 	_build_walls()
 	_paths.build(room_size, _solid_rects())
 	_setup_camera()
+	add_child(effects)
+	effects.setup(self, player)
 	_event_time = randf_range(Levels.EVENT_INTERVAL[0], Levels.EVENT_INTERVAL[1])
 	player.interact_requested.connect(_on_player_interact)
 	hud.setup()
 	hud.save_menu_closed.connect(_go_to_next_level)
 	_set_player_enabled(false)
 	hud.show_overlay()   # pantalla de inicio del nivel
+	AudioManager.play_music("level_%d" % level_number)
 
 
 func _unhandled_input(event: InputEvent) -> void:
@@ -160,6 +165,7 @@ func _update_timers(delta: float) -> void:
 	if time_left <= 30.0 and not _warned_time:
 		_warned_time = true
 		hud.show_message(Lang.t("MSG_TIME_ALMOST_UP"), Color(1.0, 0.6, 0.3))
+		AudioManager.play("time_warning")
 	if time_left <= 0.0:
 		time_left = 0.0
 		_finish_level()
@@ -205,6 +211,7 @@ func _update_timers(delta: float) -> void:
 func _start_event(name: String) -> void:
 	event = name
 	event_left = Levels.EVENT_DURATION[name]
+	AudioManager.play("event_" + name)
 	match name:
 		"rush":
 			hud.show_message(Lang.t("MSG_EVENT_RUSH"), Color(1.0, 0.55, 0.2), 2.2)
@@ -247,8 +254,12 @@ func _hit_by_forklift(forklift: Forklift) -> void:
 	forklift.cooldown = Forklift.HIT_COOLDOWN
 	var push := (player.global_position - forklift.position).normalized() * 420.0 + forklift.direction() * 200.0
 	player.stun(STUN_TIME, push)
+	AudioManager.play("hit")
+	effects.impact(player.global_position + Vector2(0, -40))
 	_reset_hold()
 	if player.carrying == "productos":
+		for id: String in player.items:
+			effects.sparkle(player.global_position, Products.INFO[id]["color"], 6)
 		player.items = {}
 		player.carrying = ""
 		hud.show_message(Lang.t("MSG_FORKLIFT_DROP"), Color(1.0, 0.5, 0.3), 2.0)
@@ -287,6 +298,8 @@ func _update_hold(delta: float) -> void:
 	if ratio >= 1.0:
 		if candidate is Robot:
 			candidate.repair()
+			AudioManager.play("robot_repair")
+			effects.sparkle(candidate.position + Vector2(0, -40), Color(0.5, 1.0, 0.6), 14)
 			hud.show_message(Lang.t("MSG_ROBOT_REPAIRED") % candidate.robot_name, Color(0.4, 1.0, 0.5))
 		else:
 			use_station(player, candidate)
@@ -303,6 +316,8 @@ func _reset_hold() -> void:
 
 ## Lo llama robot.gd cuando se atasca.
 func on_robot_broken(robot: Robot) -> void:
+	AudioManager.play("robot_broken")
+	effects.explosion(robot.position + Vector2(0, -40), 0.8)
 	hud.show_message(Lang.t("MSG_ROBOT_BROKEN") % robot.robot_name, Color(1.0, 0.45, 0.4), 2.2)
 
 
@@ -342,12 +357,16 @@ func _finish_level() -> void:
 		return
 	SaveManager.record_win(level_number, stars, money)   # desbloquea el siguiente y autoguarda
 	phase = "won"
+	AudioManager.stop_music()
+	AudioManager.play("win")
 	_stop_everything()
 
 
 func _lose(reason: String) -> void:
 	lose_reason = reason
 	phase = "lost"
+	AudioManager.stop_music()
+	AudioManager.play("lose")
 	_stop_everything()
 
 
@@ -420,6 +439,7 @@ func _new_order() -> Dictionary:
 	var order := {"number": order_number, "items": items, "reward": reward, "owner": null,
 			"time_left": patience, "time_total": patience, "urgent": urgent}
 	orders.append(order)
+	AudioManager.play("urgent_order" if urgent else "new_order")
 	if urgent:
 		hud.show_message(Lang.t("MSG_NEW_URGENT") % order_number, Color(1.0, 0.55, 0.2))
 	else:
@@ -482,11 +502,15 @@ func _complete_order(worker) -> void:
 	orders.erase(order)
 	_set_worker_order(worker, {})
 	orders_completed += 1
+	AudioManager.play("deliver", 0.0 if worker == player else -6.0)
+	effects.coins(worker.global_position + Vector2(0, -40), last_payment, worker == player)
 	if worker == player:
 		hud_order = order   # el panel sigue mostrándolo como COMPLETADO
 		var text := Lang.t("MSG_ORDER_COMPLETED_TIP") % [base, tip] if tip > 0 \
 				else Lang.t("MSG_ORDER_COMPLETED") % base
 		if multiplier > 1.0:
+			AudioManager.play("combo")
+			effects.confetti(player.global_position + Vector2(0, -60))
 			text += "\n" + Lang.t("MSG_COMBO") % combo_text(multiplier)
 		hud.show_message(text, Color(0.4, 1.0, 0.45), NEXT_ORDER_DELAY - 0.6)
 	_next_order_later()
@@ -508,7 +532,11 @@ func _expire_order(order: Dictionary) -> void:
 	money = maxi(money - Levels.EXPIRE_PENALTY, 0)
 	hearts -= 1
 	combo = 0
+	AudioManager.play("order_failed")
 	var worker = order["owner"]
+	var where: Vector2 = worker.global_position if worker != null \
+			else get_station_of_type(Station.Type.DISPATCH).global_position
+	effects.fail(where, Levels.EXPIRE_PENALTY)
 	if worker != null:
 		if worker.carrying != "caja":
 			worker.carrying = ""
@@ -634,9 +662,12 @@ func buy_robot() -> void:
 	robots.append(robot)
 	robot.warehouse = self
 	robot.robot_name = "ROBOT %d" % robots.size()
+	AudioManager.play("robot_buy")
 	var dock: Rect2 = config["dock"]
 	robot.position = dock.get_center() + Vector2((robots.size() - 2) * 90, 10)
 	add_child(robot)
+	effects.poof(robot.position + Vector2(0, -30), Color(0.8, 0.9, 1.0), 14)
+	effects.sparkle(robot.position + Vector2(0, -40), Color(0.6, 0.9, 1.0))
 	hud.show_message(Lang.t("MSG_ROBOT_BOUGHT") % robot.robot_name, Color(0.55, 0.85, 1.0))
 
 
@@ -725,6 +756,7 @@ func order_supplies() -> void:
 		return
 	money -= cost
 	shipment = {"items": supplier_lots.duplicate(), "time_left": SHIPPING_TIME}
+	AudioManager.play("truck", -4.0)
 	for id: String in supplier_lots:
 		supplier_lots[id] = 0
 	hud.show_message(Lang.t("MSG_SUPPLY_ORDERED") % cost, Color(0.6, 0.85, 1.0))
@@ -736,6 +768,8 @@ func _receive_shipment() -> void:
 			reception_boxes.append({"product": id, "qty": Products.LOT_SIZE})
 	shipment = {}
 	reception.info_text = ""
+	AudioManager.play("truck")
+	effects.poof(reception.global_position, Color(0.8, 0.72, 0.6), 14, 80.0)
 	_sync_reception()
 	hud.show_message(Lang.t("MSG_SUPPLY_ARRIVED"), Color(0.6, 0.85, 1.0), 2.0)
 
@@ -839,6 +873,9 @@ func use_station(worker, station: Station) -> void:
 				var in_box: int = worker.items[station.product]
 				var amount := mini(in_box, station.capacity - station.stock)
 				station.stock += amount
+				effects.poof(station.global_position, Color(0.85, 0.78, 0.65), 8, 80.0)
+				if is_player:
+					AudioManager.play("restock")
 				if amount == in_box:
 					worker.items = {}
 					worker.carrying = ""
@@ -852,12 +889,19 @@ func use_station(worker, station: Station) -> void:
 			new_items[station.product] = quantity
 			worker.items = new_items
 			worker.carrying = "productos"
+			effects.pickup(station.global_position, worker, station.product)
 			if is_player:
+				AudioManager.play("pick", 0.0, 0.1)
+				effects.squash(player.sprite)
 				hud.show_message("+" + Products.describe(station.product, quantity), Products.INFO[station.product]["color"].lightened(0.3))
 		Station.Type.PREP:
 			worker.items = {}
 			worker.carrying = "pedido"
+			effects.poof(station.global_position + Vector2(0, -20), Color(0.95, 0.9, 0.8), 10)
+			effects.sparkle(worker.global_position + Vector2(0, -60), Color(1.0, 0.85, 0.4), 8)
 			if is_player:
+				AudioManager.play("pack")
+				effects.squash(player.sprite)
 				hud.show_message(Lang.t("MSG_ORDER_PACKED"), Color(1.0, 0.85, 0.4))
 		Station.Type.DISPATCH:
 			worker.carrying = ""
@@ -873,6 +917,8 @@ func use_station(worker, station: Station) -> void:
 				reception_boxes.erase(box)
 				worker.items = {box["product"]: box["qty"]}
 				worker.carrying = "caja"
+			if is_player:
+				AudioManager.play("pick", 0.0, 0.1)
 			_sync_reception()
 
 
@@ -884,6 +930,7 @@ func _on_player_interact() -> void:
 		return
 	var reason := get_blocked_reason(player, current_station)
 	if reason != "":
+		AudioManager.play("error")
 		hud.show_message(reason, Color(1.0, 0.5, 0.4))
 	else:
 		use_station(player, current_station)

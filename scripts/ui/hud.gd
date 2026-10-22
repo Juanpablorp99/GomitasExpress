@@ -149,15 +149,18 @@ func toggle_pause() -> void:
 	var paused := not pause_menu.visible
 	pause_menu.visible = paused
 	get_tree().paused = paused
+	AudioManager.set_paused(paused)
 
 
 func _restart_level() -> void:
 	get_tree().paused = false
+	AudioManager.set_paused(false)
 	get_tree().reload_current_scene()
 
 
 func _go_to_menu() -> void:
 	get_tree().paused = false
+	AudioManager.set_paused(false)
 	get_tree().change_scene_to_file(Levels.TITLE_SCENE)
 
 
@@ -170,6 +173,7 @@ func _open_level_select() -> void:
 
 func _change_level(level_number: int) -> void:
 	get_tree().paused = false
+	AudioManager.set_paused(false)
 	get_tree().change_scene_to_file(Levels.SCENES[level_number - 1])
 
 

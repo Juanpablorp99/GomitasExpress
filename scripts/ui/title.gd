@@ -21,6 +21,8 @@ var _menu: Control = null   # ranuras o selector de niveles abierto encima
 
 func _ready() -> void:
 	logo.texture = Art.LOGO
+	AudioManager.play("menu_start")
+	AudioManager.play_music("menu")
 	play_button.pressed.connect(_play)
 	load_button.pressed.connect(_open_load_menu)
 	language_button.pressed.connect(_toggle_language)

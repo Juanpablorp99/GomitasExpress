@@ -10,7 +10,7 @@ extends Node
 ## - Al ganar un nivel se autoguarda en la ranura actual (si hay una).
 ##
 ## Aparte, en user://settings.cfg se guardan las opciones del jugador (idioma y
-## pantalla completa), que no dependen de la partida.
+## pantalla completa, sonido), que no dependen de la partida.
 ## F11 o Alt+Enter cambian entre pantalla completa y ventana desde cualquier pantalla.
 
 const SLOT_COUNT := 5
@@ -27,6 +27,8 @@ var current_slot := 0
 ##   "stars": [estrellas por nivel], "best_money": [mejor dinero por nivel] }
 var progress := {}
 var fullscreen := true
+## Sonido silenciado con M (ver audio_manager.gd).
+var muted := false
 
 
 func _ready() -> void:
@@ -149,6 +151,7 @@ func save_settings() -> void:
 	var config := ConfigFile.new()
 	config.set_value("game", "language", Lang.current)
 	config.set_value("display", "fullscreen", fullscreen)
+	config.set_value("audio", "muted", muted)
 	config.save(SETTINGS_PATH)
 
 
@@ -158,6 +161,7 @@ func _load_settings() -> void:
 		return
 	Lang.current = config.get_value("game", "language", Lang.current)
 	fullscreen = config.get_value("display", "fullscreen", fullscreen)
+	muted = config.get_value("audio", "muted", muted)
 
 
 ## Pantalla completa, o ventana de 1920x1080 centrada (más chica si el monitor no da).
