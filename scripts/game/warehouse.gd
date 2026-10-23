@@ -21,6 +21,7 @@ extends Node2D
 ##   IA de los robots (Nivel 3)       -> scripts/game/task_ai.gd
 ##   Caminos de los robots (A*)       -> scripts/game/path_grid.gd
 ##   Efectos (explosiones, monedas...) -> scripts/world/effects.gd
+##   Tutorial (Nivel 1) y consejos       -> scripts/game/tutorial.gd
 
 const WALL_THICKNESS := 40.0
 const NEXT_ORDER_DELAY := 3.0
@@ -85,6 +86,7 @@ var _hold_target: Object = null   # estación o robot en el que se está manteni
 var _hold_time := 0.0
 var _paths := PathGrid.new()
 var effects := Effects.new()
+var tutorial := Tutorial.new()
 
 @onready var player: Player = $Player
 @onready var reception: Station = get_node_or_null("Stations/Reception")
@@ -109,6 +111,8 @@ func _ready() -> void:
 	_event_time = randf_range(Levels.EVENT_INTERVAL[0], Levels.EVENT_INTERVAL[1])
 	player.interact_requested.connect(_on_player_interact)
 	hud.setup()
+	add_child(tutorial)
+	tutorial.setup(self)
 	hud.save_menu_closed.connect(_go_to_next_level)
 	_set_player_enabled(false)
 	hud.show_overlay()   # pantalla de inicio del nivel
@@ -161,6 +165,8 @@ func _process(delta: float) -> void:
 
 ## Reloj del nivel, paciencia de los clientes, proveedor, promo y bancarrota.
 func _update_timers(delta: float) -> void:
+	if tutorial.is_guiding():
+		return   # tutorial del Nivel 1: el reloj, los clientes y los eventos esperan
 	time_left -= delta
 	if time_left <= 30.0 and not _warned_time:
 		_warned_time = true
