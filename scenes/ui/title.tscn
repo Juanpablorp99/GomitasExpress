@@ -1,6 +1,6 @@
-[gd_scene format=3]
+[gd_scene format=3 uid="uid://dudy26ulkmc4h"]
 
-[ext_resource type="Script" path="res://scripts/ui/title.gd" id="1_title"]
+[ext_resource type="Script" uid="uid://vvnnyt4ourmc" path="res://scripts/ui/title.gd" id="1_title"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_button"]
 content_margin_left = 20.0
@@ -50,7 +50,7 @@ corner_radius_top_right = 18
 corner_radius_bottom_right = 18
 corner_radius_bottom_left = 18
 
-[node name="Title" type="Control"]
+[node name="Title" type="Control" unique_id=525282457]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -59,7 +59,7 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_title")
 
-[node name="Logo" type="TextureRect" parent="."]
+[node name="Logo" type="TextureRect" parent="." unique_id=267077629]
 layout_mode = 1
 anchors_preset = 5
 anchor_left = 0.5
@@ -73,7 +73,7 @@ pivot_offset = Vector2(300, 185)
 expand_mode = 1
 stretch_mode = 5
 
-[node name="Subtitle" type="Label" parent="."]
+[node name="Subtitle" type="Label" parent="." unique_id=1194175610]
 layout_mode = 1
 anchors_preset = 5
 anchor_left = 0.5
@@ -90,7 +90,7 @@ theme_override_font_sizes/font_size = 22
 text = "Subtitulo"
 horizontal_alignment = 1
 
-[node name="Buttons" type="VBoxContainer" parent="."]
+[node name="Buttons" type="VBoxContainer" parent="." unique_id=1529417000]
 layout_mode = 1
 anchors_preset = 5
 anchor_left = 0.5
@@ -102,7 +102,7 @@ offset_bottom = 662.0
 grow_horizontal = 2
 theme_override_constants/separation = 10
 
-[node name="PlayButton" type="Button" parent="Buttons"]
+[node name="PlayButton" type="Button" parent="Buttons" unique_id=345347982]
 layout_mode = 2
 focus_mode = 0
 theme_override_colors/font_color = Color(1, 1, 1, 1)
@@ -111,43 +111,43 @@ theme_override_colors/font_outline_color = Color(0.35, 0.03, 0.07, 1)
 theme_override_constants/outline_size = 6
 theme_override_font_sizes/font_size = 32
 theme_override_styles/normal = SubResource("StyleBoxFlat_button")
-theme_override_styles/hover = SubResource("StyleBoxFlat_hover")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_button")
+theme_override_styles/hover = SubResource("StyleBoxFlat_hover")
 text = "NUEVA PARTIDA"
 
-[node name="LoadButton" type="Button" parent="Buttons"]
+[node name="LoadButton" type="Button" parent="Buttons" unique_id=1852669648]
 layout_mode = 2
 focus_mode = 0
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_colors/font_disabled_color = Color(0.85, 0.85, 0.9, 0.6)
 theme_override_font_sizes/font_size = 26
 theme_override_styles/normal = SubResource("StyleBoxFlat_secondary")
-theme_override_styles/hover = SubResource("StyleBoxFlat_secondary")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_secondary")
+theme_override_styles/hover = SubResource("StyleBoxFlat_secondary")
 theme_override_styles/disabled = SubResource("StyleBoxFlat_secondary")
 text = "CARGAR PARTIDA"
 
-[node name="LanguageButton" type="Button" parent="Buttons"]
+[node name="LanguageButton" type="Button" parent="Buttons" unique_id=458750913]
 layout_mode = 2
 focus_mode = 0
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_font_sizes/font_size = 22
 theme_override_styles/normal = SubResource("StyleBoxFlat_secondary")
-theme_override_styles/hover = SubResource("StyleBoxFlat_secondary")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_secondary")
+theme_override_styles/hover = SubResource("StyleBoxFlat_secondary")
 text = "IDIOMA"
 
-[node name="QuitButton" type="Button" parent="Buttons"]
+[node name="QuitButton" type="Button" parent="Buttons" unique_id=398803704]
 layout_mode = 2
 focus_mode = 0
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_font_sizes/font_size = 22
 theme_override_styles/normal = SubResource("StyleBoxFlat_secondary")
-theme_override_styles/hover = SubResource("StyleBoxFlat_secondary")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_secondary")
+theme_override_styles/hover = SubResource("StyleBoxFlat_secondary")
 text = "SALIR"
 
-[node name="ControlsLabel" type="Label" parent="."]
+[node name="ControlsLabel" type="Label" parent="." unique_id=85016731]
 layout_mode = 1
 anchors_preset = 7
 anchor_left = 0.5
