@@ -61,6 +61,8 @@ signal save_menu_closed
 @onready var stars: Array[TextureRect] = [$Overlay/Center/Content/Stars/Star1,
 		$Overlay/Center/Content/Stars/Star2, $Overlay/Center/Content/Stars/Star3]
 @onready var overlay_label: Label = $Overlay/Center/Content/Label
+@onready var overlay_controls: Label = $Overlay/Center/Content/Controls
+@onready var overlay_start_hint: Label = $Overlay/Center/Content/StartHint
 # Pausa
 @onready var pause_button: Button = $PauseButton
 @onready var pause_menu: Control = $PauseMenu
@@ -264,11 +266,16 @@ func _update_overlay() -> void:
 	var config: Dictionary = game.config
 	overlay_title.text = Lang.t(config["name"])
 	overlay_stars.visible = game.phase == "won"
+	# controles y "Presiona ENTER" en líneas aparte, solo en la pantalla de inicio
+	overlay_controls.visible = game.phase == "intro"
+	overlay_start_hint.visible = game.phase == "intro"
 	for i in stars.size():
 		stars[i].texture = Art.STAR if i < game.stars else Art.STAR_EMPTY
 	match game.phase:
 		"intro":
-			overlay_label.text = Lang.t(config["intro"]) + "\n\n" + Lang.t("CONTROLS") + "\n\n" + Lang.t("PRESS_ENTER_START")
+			overlay_label.text = Lang.t(config["intro"])
+			overlay_controls.text = Lang.t("CONTROLS")
+			overlay_start_hint.text = Lang.t("PRESS_ENTER_START")
 		"won":
 			overlay_label.text = Lang.t("LEVEL_WON") % [game.orders_completed, game.money]
 		"lost":

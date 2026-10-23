@@ -505,11 +505,33 @@ expand_mode = 1
 stretch_mode = 5
 
 [node name="Label" type="Label" parent="Overlay/Center/Content"]
+custom_minimum_size = Vector2(1000, 0)
 layout_mode = 2
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 8
-theme_override_font_sizes/font_size = 24
+theme_override_font_sizes/font_size = 21
 text = "Texto"
+horizontal_alignment = 1
+autowrap_mode = 3
+
+[node name="Controls" type="Label" parent="Overlay/Center/Content"]
+custom_minimum_size = Vector2(1000, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.75, 0.78, 0.9, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 6
+theme_override_font_sizes/font_size = 16
+text = "Controles"
+horizontal_alignment = 1
+autowrap_mode = 3
+
+[node name="StartHint" type="Label" parent="Overlay/Center/Content"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.85, 0.3, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 8
+theme_override_font_sizes/font_size = 22
+text = "Presiona ENTER"
 horizontal_alignment = 1
 
 [node name="LanguageButton" type="Button" parent="."]

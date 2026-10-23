@@ -37,8 +37,8 @@ const TEXTS := {
 	"LEVEL_NAME_2": {"es": "NIVEL 2 — TURNO DE NOCHE", "en": "LEVEL 2 — NIGHT SHIFT"},
 	"LEVEL_NAME_3": {"es": "NIVEL 3 — ALMACÉN EN LA NIEVE", "en": "LEVEL 3 — SNOWY WAREHOUSE"},
 	"LEVEL_INTRO_1": {
-		"es": "Atiende los pedidos en orden: recoge las gomitas, mantén E en la mesa\npara prepararlas y llévalas al camión.\n\nCada cliente tiene un TIEMPO de espera: si se acaba, pierdes una VIDA.\nEntrega rápido para ganar PROPINA y subir el COMBO.\n¡Cuidado con el MONTACARGAS! Si te choca, se te caen las gomitas.",
-		"en": "Handle the orders in turn: pick the gummies, hold E at the table\nto pack them and take them to the truck.\n\nEvery customer has a WAITING TIME: if it runs out, you lose a LIFE.\nDeliver fast to earn a TIP and build your COMBO.\nWatch out for the FORKLIFT! If it hits you, you drop your gummies.",
+		"es": "Atiende los pedidos en orden: recoge las gomitas, mantén E en la\nZONA DE PREPARACIÓN para empacarlas y llévalas al camión.\n\nCada cliente tiene un TIEMPO de espera: si se acaba, pierdes una VIDA.\nEntrega rápido para ganar PROPINA y subir el COMBO.\n¡Cuidado con el MONTACARGAS! Si te choca, se te caen las gomitas.",
+		"en": "Handle the orders in turn: pick the gummies, hold E at the\nPACKING ZONE to pack them and take them to the truck.\n\nEvery customer has a WAITING TIME: if it runs out, you lose a LIFE.\nDeliver fast to earn a TIP and build your COMBO.\nWatch out for the FORKLIFT! If it hits you, you drop your gummies.",
 	},
 	"LEVEL_INTRO_2": {
 		"es": "Turno de noche en el gran centro de distribución.\n¡Gomita nueva: DENTADURAS!\n\nVarios pedidos llegan al TABLERO: elige los tuyos.\nLos ROBOTS de la TIENDA ayudan, pero a veces se ATASCAN: ve a repararlos (mantén E).\nOjo con los APAGONES.",
